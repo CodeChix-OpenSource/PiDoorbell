@@ -1,0 +1,120 @@
+**
+************************************************************************************
+**      CodeChix PiDoorbell - Home Automation with RaspberryPi with optional Arduino
+**      codechix.org - May the code be with you...
+**              2013-2014
+************************************************************************************
+**
+** License:       	Apache 2.0 (ONF requirement)
+** Version:        	3.0
+** Project/Library:	PiDoorbell
+** GLIB License:   	GNU LGPL
+** Description:    	Top level README - individual subdirs
+**                 	might also have their own README files
+** Assumptions:    	N/A
+** Testing:        	N/A
+** Authors:        	Rupa Dachere
+**
+** Main Contact:   rupa@codechix.org
+** Alt. Contact:   organizers@codechix.org
+***********************************************************************************
+**
+
+
+This is PiDoorbell version 3.0
+==============================
+Version 1.0 - Supports photos with Arduino
+Version 2.0 - Supports video/audio clip with Arduino
+Version 3.0 - Supports GPIO without Arduino - specifically for 2014 tutorial/workshop
+
+Copyright: CodeChix 2013-2014
+==============================
+PiDoorbell was created by Rupa Dachere in January 2013 and went through
+several revisions (v1-3).  This is a live project and is constantly being
+updated with new features and bugfixes.
+
+License information
+=====================
+PiDoorbell license: Apache 2.0
+
+GLIB license: GNU Library General Public License (GNU LGPL)
+
+
+What’s new in this release?
+=====================
+This is version 3.0 which removes the reliance on the Arduino Uno R3 and 
+connects the proximity sensor directly to the RaspberryPi via GPIO.  It
+still captures photos as well as video/audio clips.
+
+Possible: Use of the Rpi camera module instead of USB camera
+
+
+Documentation
+=====================
+Coming soon....
+
+
+Web sites
+==========
+https://github.com/codechix/pidoorbell
+
+
+Bug report
+==========
+
+
+Supported systems
+==========
+Wheezy Raspbian - any release since Dec. 2012
+USB camera
+Arduino Uno R3
+HC-SR04 sonar proximity sensor
+Dropbox
+
+
+Dependencies
+==========
+See Supported Systems
+
+
+ToDo
+==========
+Windows support
+
+
+Distribution structure
+==========
+
+
+Contributors 
+==========
+All contributors are members of:
+CodeChix
+http://www.codechix.org/
+https://github.com/codechix
+
+Sorted by last name:
+
+Dachere, Rupa - rupa@codechix.org
+
+
+Build Instructions
+==================
+
+
+Design
+======
+
+
+Terminology:
+==========
+
+
+Logging and Debugging:
+==========
+
+
+
+Troubleshooting:
+================
+
