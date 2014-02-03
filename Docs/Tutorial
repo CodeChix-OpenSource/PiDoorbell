@@ -1,0 +1,57 @@
+
+Dig up the beginnings of my tutorial and put it in here and update.
+
+
+STEP-BY-STEP Tutorial on Building your own PiDoorbell with RaspberryPi
+=======================================================================
+
+Cost:  $75 (Approx.) - If you have some of the hardware already, it's less.
+
+Hardware
+---------
+$8 USB to TTL Serial Cable for RPi 
+	- http://www.amazon.com/PL2303HX-RS232-Cable-module-Converter/dp/B008AGDTA4/ref=sr_1_10?m=A3HDZ91DLL5YJC&s=merchant-items&ie=UTF8&qid=1387911892&sr=1-10
+$10 USB wi-fi for RPi (or ethernet) 
+	- http://www.amazon.com/Edimax-EW-7811Un-Wireless-Adapter-Wizard/dp/B003MTTJOY/ref=sr_1_2?ie=UTF8&qid=1387907709&sr=8-2&keywords=usb+nano+wifi+adapter
+$5 Proximity Sensor 
+	- http://www.amazon.com/SainSmart-HC-SR04-Ranging-Detector-Distance/dp/B004U8TOE6
+$4 Breadboard 
+	- http://www.amazon.com/microtivity-830-point-Experiment-Breadboard-Jumper/dp/B008A9UP1C/ref=sr_1_5?s=electronics&ie=UTF8&qid=1387906889&sr=1-5&keywords=breadboard
+$0 Jumper wires 
+	- comes with (4)
+$6 SD Card 
+	-  http://www.amazon.com/SanDisk-Class-Flash-Memory-SDSDB-004G-AFFP/dp/B007JRB0RY/ref=sr_1_1?ie=UTF8&qid=1387911172&sr=8-1&keywords=4g+sd+card
+$40 RaspberryPi Model B
+	- 
+
+Software
+---------
+
+
+Install/Setup RaspberryPi with Wifi 
+---------
+
+
+Install PiDoorbell code
+---------
+
+
+Setup/Connect Proximity Sensor, Breadboard, Jumper wires
+---------
+
+
+Test your Rpi w/ Sensor setup
+---------
+
+
+Connect USB Camera and Test
+---------
+
+
+Test with Photo and Video
+---------
+
+
+Installation of unit (Internal/External)
+---------
+
