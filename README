@@ -11,8 +11,8 @@
 ** GLIB License:   	GNU LGPL
 ** Description:    	Top level README - individual subdirs
 **                 	might also have their own README files
-** Assumptions:    	N/A
-** Testing:        	N/A
+** Assumptions:    	You know Python and Linux basics. And you like to fiddle with hardware.
+** Testing:        	Limited - needs lots of testing
 ** Authors:        	Rupa Dachere
 **
 ** Main Contact:   rupa@codechix.org
@@ -73,6 +73,10 @@ What software you get and what you need to create
 		and Dropbox.
 		You will need to get your API keys and tokens/secrets from each of these services and modify
 		the file called "sms_auth_info.py".  This should be in the same dir/folder as (1).
+		If you want to use any other service/API, you will need to put the authentication
+		tokens and secrets in this file.  Although the filename might indicate sms content, this
+		file holds information on all services.  I might change the filename at some point if this
+		turns out to be a bit of a stumbling block for people.
 
 	(b) You will also need to create a directory to store your video/audio clips to upload
 		to Dropbox.  Do:
@@ -107,24 +111,43 @@ http://codechix.github.io/PiDoorbell - web page
 Bug report
 ==========
 
+1. There is a bug with the sequential count (noise tolerance)
+	where the count isn't tracked
+
 
 Supported systems
 ==========
 Wheezy Raspbian - any release since Dec. 2012
-USB camera
+USB camera - Logitech c270, c210
 Arduino Uno R3
 HC-SR04 sonar proximity sensor
-Dropbox
+Dropbox, Twilio, Twitter
 
 
 Dependencies
 ==========
-See Supported Systems
+
+1. Dropbox Python SDK (1.5.1 and up)
+2. sudo apt-get install python-rpi.gpio
+3. Install Twilio SDK
+4. Install Dropbox SDK (1.5.1 or higher)
+5. Install python-twitter package
+6. Install GIT if it isn't there - sudo apt-get install git
+7. sudo apt-get install pip pyserial
+8. For photos, use fswebcam (should already be installed) or uvccapture
+9. For video/audio, use ffmpeg (you can also try pyffmpeg - I haven't tried it).
+
 
 
 ToDo
 ==========
-Windows support
+1. Documentation on how to setup and run on Windows 
+2. Web-ize configuration and running PiDoorbell from a GUI
+3. Fix bugs
+4. Update code to handle photo + video/audio via command line argument
+5. Audio notification to visitor when they are detected - welcome message
+6. Two-way video/audio
+7. PiDoorbell Mobile app 
 
 
 Distribution structure
@@ -137,6 +160,9 @@ Distribution structure
 	sms_auth_info.py - you will have to create this.  See Doc.
 	dropbox-uploader.sh
 	
+2. Subdirectories
+	dropbox-pidoorbell - stores video/audio clips to upload to Dropbox
+	Docs - Additional documentation and tutorial, slides 
 
 
 Contributors 
@@ -145,6 +171,7 @@ All contributors are members of:
 CodeChix
 http://www.codechix.org/
 https://github.com/codechix
+https://github.com/rdachere
 
 Sorted by last name:
 
