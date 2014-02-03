@@ -51,12 +51,57 @@ Possible: Use of the Rpi camera module instead of USB camera
 
 Documentation
 =====================
-Coming soon....
+
+For the tutorial, take a look at the "Docs" dir/folder.
+
+What software you get and what you need to create
+--------------------------------------------------
+
+1. What you get
+ 	
+	You will get the PiDoorbell code that runs on the RaspberryPi and
+	connects to the proximity sensor and USB camera so that you can take
+	photos or video/audio clips.  This includes
+		pidoorbell-recognizer.py - main code for detection, notification
+		send-notifications.py - code to send tweet, sms etc.
+		dropbox-uploader.sh - script to upload photo/video to Dropbox
+
+2. What you will need to create/modify
+
+	(a) In order for notifications to be tweeted/sms'd as well as uploading
+		of photos/videos, you will need to create accounts on Twitter, Twilio
+		and Dropbox.
+		You will need to get your API keys and tokens/secrets from each of these services and modify
+		the file called "sms_auth_info.py".  This should be in the same dir/folder as (1).
+
+	(b) You will also need to create a directory to store your video/audio clips to upload
+		to Dropbox.  Do:
+		"mkdir -p dropbox-pidoorbell; chmod 744 dropbox-pidoorbell"
+
+	(c) You will need to get your Dropbox token and add it as the first and only line
+		in the following file.  This should be in the same dir/folder as (1).
+		dropbox_token.txt
+	 
+
+How to run PiDoorbell from the command line
+--------------------------------------------
+
+Assuming you've cloned the repo and have all necessary packages installed (see Dependencies)
+and have read & followed the documentation, you should be able to run pidoorbell as follows:
+
+1. python ./pidoorbell-recognizer.py -i 
+2. If you want to adjust the latency to account for slow bandwidth when uploading
+	to Dropbox, append the latency value to the end of the command like:
+
+   	"python ./pidoorbell-recognizer.py -i <latency_value>"
+
+   	Note that the default latency is 20 seconds.
 
 
 Web sites
 ==========
 https://github.com/codechix/pidoorbell
+http://codechix.github.io/PiDoorbell - web page
 
 
 Bug report
@@ -84,6 +129,14 @@ Windows support
 
 Distribution structure
 ==========
+
+1. Main directory with 
+	README
+	pidoorbell-recognizer.py 
+	send_notifications.py
+	sms_auth_info.py - you will have to create this.  See Doc.
+	dropbox-uploader.sh
+	
 
 
 Contributors 
