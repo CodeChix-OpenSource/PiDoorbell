@@ -8,7 +8,6 @@
 ** License:       	Apache 2.0 (ONF requirement)
 ** Version:        	3.0
 ** Project/Library:	PiDoorbell
-** GLIB License:   	GNU LGPL
 ** Description:    	Top level README - individual subdirs
 **                 	might also have their own README files
 ** Assumptions:    	You know Python and Linux basics. And you like to fiddle with hardware.
@@ -36,9 +35,6 @@ updated with new features and bugfixes.
 License information
 =====================
 PiDoorbell license: Apache 2.0
-
-GLIB license: GNU Library General Public License (GNU LGPL)
-
 
 What’s new in this release?
 =====================
