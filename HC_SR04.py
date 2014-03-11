@@ -19,6 +19,8 @@
 #
 
 # Adapted from code by Matt Hawkins of RaspberryPi-Spy.co.uk
+# Wire the circuit as shown in
+# http://www.raspberrypi-spy.co.uk/2013/01/ultrasonic-distance-measurement-using-python-part-2/
 
 import RPi.GPIO as GPIO
 import time
