@@ -32,6 +32,7 @@ def init_HC_SR04():
     '''Call this once at the beginning of the script
        before measuring any distances.
     '''
+    
     # Use BCM instead of physical pin numbering:
     GPIO.setmode(GPIO.BCM)
 
@@ -57,13 +58,35 @@ def measure_distance_cm():
     while GPIO.input(GPIO_ECHO) == 1:
         stop = time.time()
 
-    # Convert to centimeters:
+    #print "In here 8: stop is %d start is %d" % (stop, start)
+
+    # Convert to inches:
     return ((stop - start) * 34300)/2
+
+def measure_distance_in():
+    '''Measure a single distance, in inches.
+    '''
+    GPIO.output(GPIO_TRIGGER, True)
+    time.sleep(0.00001)
+    GPIO.output(GPIO_TRIGGER, False)
+    start = time.time()
+    stop = time.time()
+
+    while GPIO.input(GPIO_ECHO) == 0:
+        start = time.time()
+
+    while GPIO.input(GPIO_ECHO) == 1:
+        stop = time.time()
+
+    #print "In here 8: stop is %d start is %d" % (stop, start)
+
+    # Convert to inches:
+    return (((stop - start) * 34300)/2)*0.393701
 
 def average_distance(samples=3):
     tot = 0.0
     for i in xrange(samples):
-        tot += measure_distance_cm()
+        tot += measure_distance_in()
         time.sleep(0.1)
     return tot / samples
 
@@ -71,7 +94,7 @@ if __name__ == '__main__':
     try:
         init_HC_SR04()
         while True:
-            print "Distance: %.1f" % average_distance()
+            print "Distance: %.1f inches" % average_distance()
             time.sleep(1)
     except KeyboardInterrupt:
         # User pressed CTRL-C: reset GPIO settings.
