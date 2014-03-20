@@ -33,8 +33,8 @@ def send_sms(sms_url):
  
         print '\n\n ************************ SENDING SMS WITH URL: ', sms_url ," *************************\n\n"
 
-        body_url = "PiDoorbell! Visitor @FrontDoor: " + sms_url
-        message = client.sms.messages.create(to="+14083483184", from_="+14084588509", body=body_url)
+        body_url = "PiDoorbell for PyCon 2014! Visitor @FrontDoor: " + sms_url
+        message = client.sms.messages.create(to="XXXYYYZZZZ", from_="XXXYYYZZZZ", body=body_url)
 
 def send_tweet(tweet_url):
 
@@ -45,7 +45,7 @@ def send_tweet(tweet_url):
 
         print '\n\n ************************ SENDING TWEET WITH URL: ', tweet_url ," *************************\n\n"
 
-        post_message = "PiDoorbell!! Visitor @FrontDoor: " + tweet_url
+        post_message = "PiDoorbell for PyCon 2014 using GPIO!! Visitor @FrontDoor: " + tweet_url
         status = api.PostUpdate(post_message)
         #print status
 
