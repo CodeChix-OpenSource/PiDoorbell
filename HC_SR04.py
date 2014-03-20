@@ -49,6 +49,7 @@ def measure_distance_cm():
     time.sleep(0.00001)
     GPIO.output(GPIO_TRIGGER, False)
     start = time.time()
+    stop = time.time()
 
     while GPIO.input(GPIO_ECHO) == 0:
         start = time.time()
@@ -62,7 +63,7 @@ def measure_distance_cm():
 def average_distance(samples=3):
     tot = 0.0
     for i in xrange(samples):
-        tot += measure_distance()
+        tot += measure_distance_cm()
         time.sleep(0.1)
     return tot / samples
 
