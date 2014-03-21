@@ -16,6 +16,10 @@
 **
 ** Main Contact:   rupa@codechix.org
 ** Alt. Contact:   organizers@codechix.org
+**
+** Additional acknowledgements:  Akkana Peck - modifications to the HC_SR04.py script
+**					for averaging of sensor readings
+**				 Deepa Karnad Dhurka & Serpil Bayraktar: For FAQ's
 ***********************************************************************************
 **
 
@@ -29,8 +33,8 @@ Version 3.0 - Supports GPIO without Arduino - specifically for 2014 tutorial/wor
 Copyright: CodeChix 2013-2014
 ==============================
 PiDoorbell was created by Rupa Dachere in January 2013 and went through
-several revisions (v1-3).  This is a live project and is constantly being
-updated with new features and bugfixes.
+several revisions (v1-3).  This is a live project and is subject to random
+updates with new features and bugfixes.
 
 License information
 =====================
@@ -58,9 +62,9 @@ What software you get and what you need to create
 	You will get the PiDoorbell code that runs on the RaspberryPi and
 	connects to the proximity sensor and USB camera so that you can take
 	photos or video/audio clips.  This includes
-		pidoorbell-recognizer.py - main code for detection, notification
+		pidoorbell-recognizer-gpio.py - main code for detection, notification
 		send-notifications.py - code to send tweet, sms etc.
-		dropbox-uploader.sh - script to upload photo/video to Dropbox
+		dropbox_uploader.sh - script to upload photo/video to Dropbox
 
 2. What you will need to create/modify
 
@@ -81,6 +85,10 @@ What software you get and what you need to create
 	(c) You will need to get your Dropbox token and add it as the first and only line
 		in the following file.  This should be in the same dir/folder as (1).
 		dropbox_token.txt
+        (d) Download the Dropbox Python SDK and install it.  This is used by the dropbox_uploader.sh
+		script to upload and share the file/url.
+		"curl "https://raw.github.com/andreafabrizi/Dropbox-Uploader/master/dropbox_uploader.sh" -o dropbox_uploader.sh"
+		chmod 744 dropbox_uploader.sh
 	 
 
 How to run PiDoorbell from the command line
@@ -89,11 +97,11 @@ How to run PiDoorbell from the command line
 Assuming you've cloned the repo and have all necessary packages installed (see Dependencies)
 and have read & followed the documentation, you should be able to run pidoorbell as follows:
 
-1. python ./pidoorbell-recognizer.py -i 
+1. sudo python ./pidoorbell-recognizer-gpio.py -i 
 2. If you want to adjust the latency to account for slow bandwidth when uploading
 	to Dropbox, append the latency value to the end of the command like:
 
-   	"python ./pidoorbell-recognizer.py -i <latency_value>"
+   	"sudo python ./pidoorbell-recognizer-gpio.py -i <latency_value>"
 
    	Note that the default latency is 20 seconds.
 
@@ -132,7 +140,10 @@ Dependencies
 7. sudo apt-get install pip pyserial
 8. For photos, use fswebcam (should already be installed) or uvccapture
 9. For video/audio, use ffmpeg (you can also try pyffmpeg - I haven't tried it).
-
+10. Download dropbox_uploader.sh sript - https://github.com/andreafabrizi/Dropbox-Uploader. 
+      Please give him some money - he's done a great job.
+   Run: curl "https://raw.github.com/andreafabrizi/Dropbox-Uploader/master/dropbox_uploader.sh" -o dropbox_uploader.sh
+   Run: chmod 744 dropbox_uploader.sh
 
 
 ToDo
@@ -151,10 +162,12 @@ Distribution structure
 
 1. Main directory with 
 	README
-	pidoorbell-recognizer.py 
+	pidoorbell-recognizer-gpio.py 
 	send_notifications.py
 	sms_auth_info.py - you will have to create this.  See Doc.
 	dropbox-uploader.sh
+	HC_SRO4.py
+	dropbox_token.txt
 	
 2. Subdirectories
 	dropbox-pidoorbell - stores video/audio clips to upload to Dropbox
@@ -171,7 +184,10 @@ https://github.com/rdachere
 
 Sorted by last name:
 
+Bayraktar, Serpil - serpil@cisco.com
 Dachere, Rupa - rupa@codechix.org
+Karnad, Deepa - deepa.karnad@gmail.com
+Peck, Akkana - akkana@gmail.com
 
 
 Build Instructions
