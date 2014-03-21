@@ -45,7 +45,7 @@ def send_tweet(tweet_url):
 
         print '\n\n ************************ SENDING TWEET WITH URL: ', tweet_url ," *************************\n\n"
 
-        post_message = "PiDoorbell for PyCon 2014 using GPIO!! Visitor @FrontDoor: " + tweet_url
+        post_message = "PiDoorbell for #pycon2014 using GPIO!! Visitor @FrontDoor: " + tweet_url
         status = api.PostUpdate(post_message)
         #print status
 
