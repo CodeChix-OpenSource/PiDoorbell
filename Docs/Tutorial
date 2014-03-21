@@ -19,14 +19,14 @@ Hardware
 	- http://www.amazon.com/microtivity-830-point-Experiment-Breadboard-Jumper/dp/B008A9UP1C/ref=sr_1_5?s=electronics&ie=UTF8&qid=1387906889&sr=1-5&keywords=breadboard
 * $0 Jumper wires 
 	- male-female (4)
-	- male-male (3)
+	- male-male (2)
 * $6 SD Card 
 	-  http://www.amazon.com/SanDisk-Class-Flash-Memory-SDSDB-004G-AFFP/dp/B007JRB0RY/ref=sr_1_1?ie=UTF8&qid=1387911172&sr=8-1&keywords=4g+sd+card
 * $40 RaspberryPi Model B with power supply
 
 * $1-$2 Resistors
-	- 360 ohm (1) - with red/orange band - see photo in this dir
-	- 470 ohm (1) - no red/orange band - see photo in this dir
+	- 360 ohm (1) - with red/orange band - see pidoorbell.jpg photo in this dir
+	- 470 ohm (1) - no red/orange band - see pidoorbell.jpg photo in this dir
 * USB Webcam - preferably Logitech C310 or C270.  Raspi camera module might also work, but is a work in progress
 	at present.
 
