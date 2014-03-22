@@ -27,7 +27,7 @@ sys.path.append("/home/pi/pycon2014/pidoorbell")
 import subprocess
 from subprocess import call, Popen
 from time import time, sleep
-import datetime
+import datetime, argparse
 import sms_auth_info
 import RPi.GPIO as GPIO
 from hc_sr04 import init_HC_SR04, average_distance
@@ -42,8 +42,14 @@ VALID_PIC_THRESHOLD    = 5    # weak attempt at mitigating "noise" (butterfly/mo
 DEFAULT_LATENCY        = 20   # default secs to wait to compensate for network latency/bandwidth
 DELAY_BETWEEN_VISITORS = 20   # delay between polling for visitors 
 
+# picture modes - video capture (10 seconds) or photo
+VIDEO = 1
+PHOTO = 2
+
 FFMPEG_CMD = "ffmpeg -f video4linux2 -s 320x240 -i /dev/video0 -f alsa -ar 22050 -ac 1 \
 		 -i hw:1,0 -ab 48k -timelimit 10 ./dropbox-pidoorbell/"
+
+FSWEBCAM_CMD = "fswebcam ./dropbox-pidoorbell/"
 
 SEND_NOTIFICATIONS_ALL   = "python ./send_notifications.py -m all -u"
 SEND_NOTIFICATIONS_SMS   = "python ./send_notifications.py -m sms -u"
@@ -51,8 +57,10 @@ SEND_NOTIFICATIONS_TWEET = "python ./send_notifications.py -m tweet -u"
 
 # Progress print stmts for demo's
 PRINT_STARTING_VIDEOCLIP = "\n\n************************** STARTING VIDEOCLIP:   ************************ \n\n" 
-PRINT_UPLOAD_TO_DROPBOX  = "\n\n************************** UPLOADING TO DROPBOX: ************************ \n\n" 
+PRINT_STARTING_PHOTO = "\n\n************************** STARTING PHOTO:   ************************ \n\n" 
 PRINT_STOPPING_VIDEOCLIP = "\n\n**** ENDING VIDEOCLIP FOR - "
+PRINT_STOPPING_PHOTO = "\n\n**** ENDING PHOTO FOR - "
+PRINT_UPLOAD_TO_DROPBOX  = "\n\n************************** UPLOADING TO DROPBOX: ************************ \n\n" 
 
 def get_db_file_link(dropbox_file_name):
 
@@ -70,8 +78,6 @@ def get_db_file_link(dropbox_file_name):
 
 	client = client.DropboxClient(sess)
 
-	print "in here"
-
 	return_dict = client.share(dropbox_file_name)
 
 	print "return_dict is: ", return_dict
@@ -83,7 +89,7 @@ def get_db_file_link(dropbox_file_name):
 
 class PiDoorbell_GPIO() :
 
-    def run(self, interactive, latency) :
+    def run(self, interactive, latency, pic_mode) :
 
         global BASEDIR_FOR_PIDOORBELL_VIDEOS, MIN_TRIGGER_DISTANCE, MAX_TRIGGER_DISTANCE, \
 		BASEPORT_FOR_SENSOR_DATA, BASEPORT_BAUD_RATE
@@ -107,50 +113,69 @@ class PiDoorbell_GPIO() :
 
 			       if valid_pic_count == VALID_PIC_THRESHOLD:
 
-				  #build videoclip filename with date and timestamp
+				  #build pidoorbell_filename with date and timestamp
 				  now = datetime.datetime.now()
-				  videoclip_filename = "visitor-video-%d:%d:%d-%d:%d.mpg" % \
+
+				  if pic_mode == VIDEO:
+				      pidoorbell_filename = "visitor-video-%d:%d:%d-%d:%d.mpg" % \
 						   (now.year, now.month, now.day, now.hour, now.minute)
+				      #take a video snippet 
+				      take_videoclip_cmd = FFMPEG_CMD + pidoorbell_filename
 
+				      print PRINT_STARTING_VIDEOCLIP
+    
+				      videoclip_cmd_rc = call(take_videoclip_cmd, shell=True)
 
-				  #take a video snippet and reset valid_pic_count
-				  take_videoclip_cmd = FFMPEG_CMD + videoclip_filename
-
-				  print PRINT_STARTING_VIDEOCLIP
-
-				  videoclip_cmd_rc = call(take_videoclip_cmd, shell=True)
-
-				  print PRINT_UPLOAD_TO_DROPBOX
+				      print PRINT_UPLOAD_TO_DROPBOX
 	  
+				      # sync_dropbox_cmd = "./dropbox_uploader.sh upload ./dropbox-pidoorbell/" + \
+							   #pidoorbell_filename + " "+ pidoorbell_filename
+				
+				      #process = subprocess.Popen(sync_dropbox_cmd, shell=True)
+
+				      print PRINT_STOPPING_VIDEOCLIP + pidoorbell_filename
+
+				  # default to photo
+				  else: 
+				      pidoorbell_filename = "visitor-video-%d:%d:%d-%d:%d.jpg" % \
+						   (now.year, now.month, now.day, now.hour, now.minute)
+				      #take a photo snippet 
+				      take_photo_cmd = FSWEBCAM_CMD + pidoorbell_filename
+
+				      print PRINT_STARTING_PHOTO
+    
+				      photo_cmd_rc = call(take_photo_cmd, shell=True)
+
+				      print PRINT_UPLOAD_TO_DROPBOX
+				      # print PRINT_STOPPING_PHOTO + pidoorbell_filename
+
+
 				  sync_dropbox_cmd = "./dropbox_uploader.sh upload ./dropbox-pidoorbell/" + \
-							   videoclip_filename + " "+ videoclip_filename
+					   		   pidoorbell_filename + " "+ pidoorbell_filename
 				
 				  process = subprocess.Popen(sync_dropbox_cmd, shell=True)
-
-				  print PRINT_STOPPING_VIDEOCLIP + videoclip_filename
 
 				  ## account for network latency 
 				  print "latency is %s " % latency
 				  sleep(float(latency))
 
-				  #link_to_db_file = get_db_file_link(videoclip_filename) 
+				  #link_to_db_file = get_db_file_link(pidoorbell_filename) 
 
-				  get_link_cmd = "./dropbox_uploader.sh share " + videoclip_filename
+				  get_link_cmd = "./dropbox_uploader.sh share " + pidoorbell_filename
 
 				  p = subprocess.Popen(get_link_cmd, stdout=subprocess.PIPE, shell=True)
 				  (output, err) = p.communicate()
-
-				  print "file link is: ", output[15:]
 
 				  # Send notifications using both Twilio (USA) and Twitter (worldwide)
 				  # for demo purposes.  Else, use "-m sms" for SMS, "-m tweet" for TWITTER
 				  # See definitions section for predefined vars to use (SEND_NOTIFICATIONS_SMS,
 				  # SEND_NOTIFICATIONS_TWEET)
 
-				  send_sms_cmd = SEND_NOTIFICATIONS_ALL + output[15:]
+				  #send_sms_cmd = SEND_NOTIFICATIONS_ALL + output
+				  send_sms_cmd = SEND_NOTIFICATIONS_SMS + output
 				  sms_url_rc = call(send_sms_cmd, shell=True)
 
-
+				  #reset valid_pic_count
 				  valid_pic_count = 0
 				  
 				  #sleep for a short while before checking again
@@ -167,20 +192,31 @@ class PiDoorbell_GPIO() :
            GPIO.cleanup()
 
 if __name__ == '__main__':
-  # If -i, run in interactive mode
-  if len (sys.argv) > 1 and sys.argv[1] == '-i' :
-    interactive = True
 
-    # latency settings so that we can tweak this for
-    # for demo purposes depending on conference network
-    # bandwidth
-    if len(sys.argv) <= 2:
-       latency = DEFAULT_LATENCY
-    else:
-       latency = sys.argv[2]
-  else :
-    interactive = False
+  # parse command line arguments to detect whether optional flags are set for
+  #   interactive mode - "-i"
+  #   latency - "-latency"
+  #   picture mode - "-pic_mode"
+
+  parser = argparse.ArgumentParser()
+
+  parser.add_argument("-i", action="store_true", help="Indicates interactive run mode for PiDoorbell")
+  parser.add_argument("-latency", type=int, help="Increase latency to account for wifi/network issues. Default: 20s")
+  parser.add_argument("-pic_mode", type=int, choices=[1,2], help="Specify Video Capture (1) or Photo (2). Default: Photo (1)")
+
+  args = parser.parse_args()
+  if args.latency:
+    print "latency is: ", args.latency
+    latency = args.latency
+  else:
+    latency = DEFAULT_LATENCY
+
+  if args.pic_mode:
+    print "picture mode is: ",args.pic_mode
+    pic_mode = args.pic_mode
+  else:
+    pic_mode = PHOTO
 
   pidoorbell_gpio = PiDoorbell_GPIO()
-  pidoorbell_gpio.run(interactive, latency)
+  pidoorbell_gpio.run(args.i, latency, pic_mode)
 
