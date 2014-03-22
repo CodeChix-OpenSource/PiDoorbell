@@ -64,7 +64,10 @@ What software you get and what you need to create
 	photos or video/audio clips.  This includes
 		pidoorbell-recognizer-gpio.py - main code for detection, notification
 		send-notifications.py - code to send tweet, sms etc.
+		sms_auth_info.py - authentication keys and tokens for Twilio, Twitter, Dropbox
 		dropbox_uploader.sh - script to upload photo/video to Dropbox
+		dropbox_token.txt - file containing dropbox uploader tokens
+		HC_SR04.py - standalone script to read sensor data
 
 2. What you will need to create/modify
 
@@ -82,13 +85,16 @@ What software you get and what you need to create
 		to Dropbox.  Do:
 		"mkdir -p dropbox-pidoorbell; chmod 744 dropbox-pidoorbell"
 
-	(c) You will need to get your Dropbox token and add it as the first and only line
-		in the following file.  This should be in the same dir/folder as (1).
-		dropbox_token.txt
-        (d) Download the Dropbox Python SDK and install it.  This is used by the dropbox_uploader.sh
+        (c) Download the Dropbox Python SDK and install it.  This is used by the dropbox_uploader.sh
 		script to upload and share the file/url.
 		"curl "https://raw.github.com/andreafabrizi/Dropbox-Uploader/master/dropbox_uploader.sh" -o dropbox_uploader.sh"
 		chmod 744 dropbox_uploader.sh
+
+	(d) You will need to get your Dropbox token and add it as the first and only line
+		in the following file.  This should be in the same dir/folder as (1).
+		dropbox_token.txt.  When you run the dropbox_uploader.sh script, you will
+		get directions on how to get this info and add it to this file.
+
 	 
 
 How to run PiDoorbell from the command line
@@ -97,14 +103,31 @@ How to run PiDoorbell from the command line
 Assuming you've cloned the repo and have all necessary packages installed (see Dependencies)
 and have read & followed the documentation, you should be able to run pidoorbell as follows:
 
-1. sudo python ./pidoorbell-recognizer-gpio.py -i 
-2. If you want to adjust the latency to account for slow bandwidth when uploading
+1. git clone git@github.com:codechix/PiDoorbell.git
+ 
+2. sudo python ./pidoorbell-recognizer-gpio.py -h 
+	This will provide you with help on the various options.  They are:
+	  -i - Run in interactive mode
+	  -latency - Latency in seconds if you want to increase the default of 20s
+			to account for crappy wifi/network connectivity
+			This is optional.
+	  -pic_mode - Specify whether you want to take a Video Clip (1) or Photo (2). Defaults to Photo (2).
+			This is optional.
+	  -camera_input - Specify using Rpi camera module.  This is optional.
+
+3. If you want to adjust the latency to account for slow bandwidth when uploading
 	to Dropbox, append the latency value to the end of the command like:
 
-   	"sudo python ./pidoorbell-recognizer-gpio.py -i <latency_value>"
+   	"sudo python ./pidoorbell-recognizer-gpio.py -i -latency <latency_value>"
 
-   	Note that the default latency is 20 seconds.
+   	Note that the default latency is 20 seconds 
 
+4. If you want to specify the picture mode for a video clip of 10 secs [1] or a
+	snapshot/Photo [2], append the pic_mode value to the end of the command like:
+
+   	"sudo python ./pidoorbell-recognizer-gpio.py -i -pic_mode <1 or 2>"
+
+   	Note that the default pic_mode is Photo (2).  Video Clip = 1.
 
 Web sites
 ==========
@@ -123,7 +146,6 @@ Supported systems
 ==========
 Wheezy Raspbian - any release since Dec. 2012
 USB camera - Logitech c270, c210
-Arduino Uno R3
 HC-SR04 sonar proximity sensor
 Dropbox, Twilio, Twitter
 
@@ -131,19 +153,28 @@ Dropbox, Twilio, Twitter
 Dependencies
 ==========
 
-1. Dropbox Python SDK (1.5.1 and up)
-2. sudo apt-get install python-rpi.gpio
-3. Install Twilio SDK
-4. Install Dropbox SDK (1.5.1 or higher)
-5. Install python-twitter package
-6. Install GIT if it isn't there - sudo apt-get install git
-7. sudo apt-get install pip pyserial
-8. For photos, use fswebcam (should already be installed) or uvccapture
-9. For video/audio, use ffmpeg (you can also try pyffmpeg - I haven't tried it).
-10. Download dropbox_uploader.sh sript - https://github.com/andreafabrizi/Dropbox-Uploader. 
+1. sudo apt-get install pip pyserial python-rpi.gpio git
+2. Create Dropbox account. Download and Install Dropbox Python SDK (1.5.1 and up)
+	https://www.dropbox.com/developers/core/sdks/python
+3. Create Twilio account and save account ID and authentication keys in sm_auth_info.py
+	Download & install Twilio SDK: http://twilio.com/docs/libraries
+4. Create Twitter account. Download & Install python-twitter package - https://code.google.com/p/python-twitter/
+	- python setup.py build
+        - python setup.py install
+    	- Test it: python setup.py test  or python twitter_test.py	
+5. For photos, PiDoorbell uses fswebcam (should already be installed) or uvccapture
+6. Download dropbox_uploader.sh sript - https://github.com/andreafabrizi/Dropbox-Uploader. 
       Please give him some money - he's done a great job.
    Run: curl "https://raw.github.com/andreafabrizi/Dropbox-Uploader/master/dropbox_uploader.sh" -o dropbox_uploader.sh
    Run: chmod 744 dropbox_uploader.sh
+7. For video/audio, use ffmpeg (you can also try pyffmpeg - I haven't tried it).
+8. Download and compile ffmpeg to capture video clips. I couldn't get avconf to work.: 
+    	cd /usr/src/
+    	git clone git://source.ffmpeg.org/ffmpeg.git
+    	cd ffmpeg      
+    	./configure --enable-shared --enable-gpl --prefix=/usr --enable-nonfree --enable-libmp3lame --enable-libfaac --enable-libx264 --enable-version3 --disable-mmx
+    	make
+    	make install
 
 
 ToDo
@@ -151,10 +182,9 @@ ToDo
 1. Documentation on how to setup and run on Windows 
 2. Web-ize configuration and running PiDoorbell from a GUI
 3. Fix bugs
-4. Update code to handle photo + video/audio via command line argument
-5. Audio notification to visitor when they are detected - welcome message
-6. Two-way video/audio
-7. PiDoorbell Mobile app 
+4. Audio notification to visitor when they are detected - welcome message
+5. Two-way video/audio
+6. PiDoorbell Mobile app 
 
 
 Distribution structure
@@ -168,6 +198,9 @@ Distribution structure
 	dropbox-uploader.sh
 	HC_SRO4.py
 	dropbox_token.txt
+	Docs/Tutorial
+	Docs/*.jpg
+	Docs/more stuff to come
 	
 2. Subdirectories
 	dropbox-pidoorbell - stores video/audio clips to upload to Dropbox
@@ -181,6 +214,9 @@ CodeChix
 http://www.codechix.org/
 https://github.com/codechix
 https://github.com/rdachere
+https://github.com/akkana
+https://github.com/deepadhurka
+https://github.com/serpilb
 
 Sorted by last name:
 
