@@ -18,6 +18,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
+#  Modifications for PiDoorbell:
+#     Author: Rupa Dachere
+#     Mods: line 975: removed print so only url is output without extra text
+#     Date: March 21, 2014
+#
 
 #Default configuration file
 CONFIG_FILE=~/.dropbox_uploader
@@ -967,7 +972,7 @@ function db_share
 
     #Check
     if grep -q "^HTTP/1.1 200 OK" "$RESPONSE_FILE"; then
-        print " > Share link: "
+        print ""
         echo $(sed -n 's/.*"url": "\([^"]*\).*/\1/p' "$RESPONSE_FILE")
     else
         print "FAILED\n"
