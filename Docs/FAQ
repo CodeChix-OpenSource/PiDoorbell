@@ -1,0 +1,130 @@
+**
+************************************************************************************
+**      CodeChix PiDoorbell - Home Automation with RaspberryPi using GPIO
+**      codechix.org - May the code be with you...
+**              2013-2014
+************************************************************************************
+**
+** License:       	Apache 2.0
+** Version:        	1.0
+** Project/Library:	PiDoorbell
+** Description:    	Frequently Asked Question releated to set up
+** Assumptions:    	You know Python and Linux basics. And you like to fiddle 
+**                      with hardware.
+** Testing:        	Limited - needs lots of testing
+**
+** Main Contact:   rupa@codechix.org
+** Alt. Contact:   organizers@codechix.org
+***********************************************************************************
+**
+1. Hardware you may need for rPi setup
+   USB hub: to connect usb mouse, keyboard and wifi dongle at the same time.
+            Expected to be needed only for initial setup
+   Ethernet cable - crossover: a reliable way to connect to rPi to any computer
+                               using static IP addresses on the rPi and computer.
+                               Useful when console or wifi fails.
+   Ethernet dongle for Mac Air/Pro: if using ethernet to connect to rPi
+   Monitor with DVI or HDMI: required for initial setup
+       (http://www.monoprice.com/Product?c_id=102&cp_id=10231&cs_id=1023104&p_id=2404&seq=1&format=2)
+   Keyboard, Mouse, Monitor: required for initial setup
+   HDMI cable or HDMI-DVI cable: depending on monitor
+
+
+2. Connecting console cable to GPIO pins
+Follow adafruit’s tutorial. 
+http://learn.adafruit.com/adafruits-raspberry-pi-lesson-5-using-a-console-cable/overview
+
+a. Mac:
+Download and install the driver for mac.
+screen /dev/cu.PL2303-00001004 115200
+The device will have a slightly different name. So, type the line above as far as 
+"cu.PL" then press the TAB key to auto-complete to whatever your device is called, 
+before adding 115200 (which is the baud rate) to the end.
+
+b. Linux:
+sudo screen /dev/ttyUSB0 115200
+
+Tested to work also on Ubuntu on VMFusion. Make sure you select 'connect to Linux' 
+option when connecting the USB to Mac.
+
+To exit screen:
+get out of the screen by: C-a C-\ (on Mac, C is Command key)
+
+Note:
+i. The console has limited ease of use and is slow. It is recommended to setup 
+alternate means such as wifi or static ethernet, for ssh access from any computer
+on the network.
+
+ii. When on the console, you may get a lot of "noise" which is seen as characters 
+appearing on the screen, not created by keystrokes. You may be able to get rid of 
+it temporarily by moving the USB cable for the keyboard from one port to another 
+(and back) on the card. The noise may be less if the rPi is in a container.
+
+iii. Vi editor works best on the console
+
+
+3. Network setup: 
+
+a. WIFI:
+Edit the /etc/network/interfaces file and 
+                  restart with 'sudo /etc/init.d/networking restart'
+i. Open wifi:
+auto wlan0
+iface wlan0 inet dhcp
+    wireless-essid "network-name-goes-here"
+    wireless-mode managed
+#Note: restart with ‘sudo /etc/init.d/networking restart’
+
+ii. Secure wifi:
+auto wlan0
+allow-hotplug wlan0
+iface wlan0 inet dhcp
+	wpa-ssid “network name”
+	wpa-psk “passphrase”
+#Note: remove the wpa_supplicant.conf and inet manual lines for wlan0
+
+b. Static ethernet:
+i. Configure static IP address 
+Replace the following line:    iface eth0 inet dhcp with this:
+iface eth0 inet static
+address 192.168.2.2
+netmask 255.255.255.0
+gateway 192.168.2.1
+
+To enable the configuration, CTRL-ALT-DEL to reboot or 
+restart network with 'sudo /etc/init.d/networking restart'
+
+If using ethernet, connect the RaspberryPi's ethernet 
+cable to your laptop.
+
+Configure your laptop's ethernet address to be 192.168.2.1/24
+
+Note the IP address on the rPi: ifconfig -a
+To test network connectivity, ping www.codechix.org from the 
+rPi prompt.
+
+Ssh to raspberrypi: ssh pi@<ip address> (password: raspberry)
+Optionally, ssh with X: ssh -X pi@<ip address> 
+
+
+4. Hardware circuit
+a. The simple hardware circuit in this project uses two
+resistors to bring down the voltage to 3.3V for interfacing
+with the rPi. Resistor values are denoted by color bands.
+If uncertain, use a multi-meter to confirm the values.
+
+b. Build the circuit on the breadboard by making sure the 
+two ends of the resistors go into two different rows. 
+
+Before connecting the rPi or the sensor to the circuit, 
+test the circuit by applying 5 volts input where it connects 
+to the sensor and measuring voltage at the point that connects
+to the rPi. Confirm that this is as per design.
+
+As the next step, test the sensor independently by applying
+5 volts at input and testing the Echo line voltage output.
+
+Finally, only when circuit and sensor are independently tested
+to work correctly, connect the sensor and rPi to the circuit.
+
+
