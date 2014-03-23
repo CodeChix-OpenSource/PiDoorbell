@@ -26,14 +26,16 @@ import os
 import subprocess
 import time
 
-def take_photo(outfile='/tmp/still.jpg', res=[640, 480]):
+def take_still(outfile='/tmp/still.jpg', res=[640, 480], verbose=False):
     # Do we have a USB camera for which we can use fswebcam?
     if os.path.exists('/dev/video0'):
+        if verbose:
+            print "Taking photo with fswebcam ..."
         rv = subprocess.call(['/usr/bin/fswebcam', '-d', '/dev/video0',
                               '-r', '%dx%d' % tuple(res), outfile])
         if not rv:
             return
-        print "fswebcam failed! Returned %d" % rv
+        print "fswebcam failed! Error code %d" % rv
 
     # No luck with a USB camera. Is there a Pi camera?
     if not os.path.exists('/dev/fb0'):
@@ -47,11 +49,15 @@ def take_photo(outfile='/tmp/still.jpg', res=[640, 480]):
         if not os.path.exists('/usr/bin/raspistill'):
             raise SystemError, \
                 "Neither python-picamera nor raspistill is installed"
+        if verbose:
+            print "Taking photo with raspistill"
         rv = subprocess.call(['/usr/bin/raspistill', '-o', outfile])
         if rv:
             raise "raspistill exited with %d" % rv
         return
 
+    if verbose:
+        print "Taking photo with picamera"
     with picamera.PiCamera() as camera:
         camera.resolution = res
         camera.start_preview()
@@ -63,5 +69,5 @@ def take_photo(outfile='/tmp/still.jpg', res=[640, 480]):
         camera.stop_preview()
 
 if __name__ == '__main__':
-    take_photo()
+    take_photo(verbose=True)
 
