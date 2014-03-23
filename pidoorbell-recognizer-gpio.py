@@ -98,89 +98,96 @@ class PiDoorbell_GPIO() :
 
             while True :
                 data = average_distance()
-                if data :
-                    if interactive :
-                        print "Distance: %.1f inches" % data
-                        print data
-                        if int(data) > MIN_TRIGGER_DISTANCE and int(data) < MAX_TRIGGER_DISTANCE:
+                if not data :
+                    continue
 
-                            print "******  DETECTED AN OBJECT AT --    ", data ,"-- INCHES ****** "
+                if not interactive :
+                    print data
+                    continue
 
-                            valid_pic_count += 1
+                print "Distance: %.1f inches" % data
+                print data
+                if int(data) <= MIN_TRIGGER_DISTANCE or int(data) >= MAX_TRIGGER_DISTANCE:
+                    continue
 
-                            if valid_pic_count == VALID_PIC_THRESHOLD:
+                # There's an object in the target distance range
+                print "******  DETECTED AN OBJECT AT --    ", data ,"-- INCHES ****** "
 
-                                #build pidoorbell_filename with date and timestamp
-                                now = datetime.datetime.now()
+                valid_pic_count += 1
 
-                                if pic_mode == VIDEO:
-                                    pidoorbell_filename = "visitor-video-%d:%d:%d-%d:%d.mpg" % \
-                                        (now.year, now.month, now.day, now.hour, now.minute)
-                                    #take a video snippet 
-                                    take_videoclip_cmd = FFMPEG_CMD + pidoorbell_filename
+                if valid_pic_count < VALID_PIC_THRESHOLD:
+                    continue
 
-                                    print PRINT_STARTING_VIDEOCLIP
+                # We have enough pics:
+                # build pidoorbell_filename with date and timestamp
+                now = datetime.datetime.now()
 
-                                    videoclip_cmd_rc = call(take_videoclip_cmd, shell=True)
+                if pic_mode == VIDEO:
+                    pidoorbell_filename = "visitor-video-%d:%d:%d-%d:%d.mpg" % \
+                        (now.year, now.month, now.day, now.hour, now.minute)
+                    #take a video snippet 
+                    take_videoclip_cmd = FFMPEG_CMD + pidoorbell_filename
 
-                                    print PRINT_UPLOAD_TO_DROPBOX
+                    print PRINT_STARTING_VIDEOCLIP
 
-                                    # sync_dropbox_cmd = "./dropbox_uploader.sh upload ./dropbox-pidoorbell/" + \
-                                                       #pidoorbell_filename + " "+ pidoorbell_filename
+                    videoclip_cmd_rc = call(take_videoclip_cmd, shell=True)
 
-                                    #process = subprocess.Popen(sync_dropbox_cmd, shell=True)
+                    print PRINT_UPLOAD_TO_DROPBOX
 
-                                    print PRINT_STOPPING_VIDEOCLIP + pidoorbell_filename
+                    # sync_dropbox_cmd = "./dropbox_uploader.sh upload ./dropbox-pidoorbell/" + \
+                                       #pidoorbell_filename + " "+ pidoorbell_filename
 
-                                # default to photo
-                                else: 
-                                    pidoorbell_filename = "visitor-video-%d:%d:%d-%d:%d.jpg" % \
-                                               (now.year, now.month, now.day, now.hour, now.minute)
-                                    #take a photo snippet 
-                                    take_photo_cmd = FSWEBCAM_CMD + pidoorbell_filename
+                    #process = subprocess.Popen(sync_dropbox_cmd, shell=True)
 
-                                    print PRINT_STARTING_PHOTO
+                    print PRINT_STOPPING_VIDEOCLIP + pidoorbell_filename
 
-                                    photo_cmd_rc = call(take_photo_cmd, shell=True)
+                # default to photo
+                else: 
+                    pidoorbell_filename = "visitor-video-%d:%d:%d-%d:%d.jpg" % \
+                               (now.year, now.month, now.day, now.hour, now.minute)
+                    #take a photo snippet 
+                    take_photo_cmd = FSWEBCAM_CMD + pidoorbell_filename
 
-                                    print PRINT_UPLOAD_TO_DROPBOX
-                                    # print PRINT_STOPPING_PHOTO + pidoorbell_filename
+                    print PRINT_STARTING_PHOTO
 
-                                    sync_dropbox_cmd = "./dropbox_uploader.sh upload ./dropbox-pidoorbell/" + \
-                                                       pidoorbell_filename + " "+ pidoorbell_filename
+                    photo_cmd_rc = call(take_photo_cmd, shell=True)
 
-                                process = subprocess.Popen(sync_dropbox_cmd, shell=True)
+                    print PRINT_UPLOAD_TO_DROPBOX
+                    # print PRINT_STOPPING_PHOTO + pidoorbell_filename
 
-                                ## account for network latency 
-                                print "latency is %s " % latency
-                                sleep(float(latency))
+                    sync_dropbox_cmd = "./dropbox_uploader.sh upload ./dropbox-pidoorbell/" + \
+                                       pidoorbell_filename + " "+ pidoorbell_filename
 
-                                #link_to_db_file = get_db_file_link(pidoorbell_filename) 
+                process = subprocess.Popen(sync_dropbox_cmd, shell=True)
 
-                                get_link_cmd = "./dropbox_uploader.sh share " + pidoorbell_filename
+                ## account for network latency 
+                print "latency is %s " % latency
+                sleep(float(latency))
 
-                                p = subprocess.Popen(get_link_cmd, stdout=subprocess.PIPE, shell=True)
-                                (output, err) = p.communicate()
+                #link_to_db_file = get_db_file_link(pidoorbell_filename) 
 
-                                # Send notifications using both Twilio (USA) and Twitter (worldwide)
-                                # for demo purposes.  Else, use "-m sms" for SMS, "-m tweet" for TWITTER
-                                # See definitions section for predefined vars to use (SEND_NOTIFICATIONS_SMS,
-                                # SEND_NOTIFICATIONS_TWEET)
+                get_link_cmd = "./dropbox_uploader.sh share " + pidoorbell_filename
 
-                                #send_sms_cmd = SEND_NOTIFICATIONS_ALL + output
-                                send_sms_cmd = SEND_NOTIFICATIONS_SMS + output
-                                sms_url_rc = call(send_sms_cmd, shell=True)
+                p = subprocess.Popen(get_link_cmd, stdout=subprocess.PIPE, shell=True)
+                (output, err) = p.communicate()
 
-                                #reset valid_pic_count
-                                valid_pic_count = 0
+                # Send notifications using both Twilio (USA) and Twitter (worldwide)
+                # for demo purposes.  Else, use "-m sms" for SMS, "-m tweet" for TWITTER
+                # See definitions section for predefined vars to use (SEND_NOTIFICATIONS_SMS,
+                # SEND_NOTIFICATIONS_TWEET)
 
-                                #sleep for a short while before checking again
-                                sleep(DELAY_BETWEEN_VISITORS)
+                #send_sms_cmd = SEND_NOTIFICATIONS_ALL + output
+                send_sms_cmd = SEND_NOTIFICATIONS_SMS + output
+                sms_url_rc = call(send_sms_cmd, shell=True)
 
-                                print "Done sleeping  - I'm awake again!!!! "
-                                continue      
-                    else:  # not interactive
-                        print data
+                #reset valid_pic_count
+                valid_pic_count = 0
+
+                #sleep for a short while before checking again
+                sleep(DELAY_BETWEEN_VISITORS)
+
+                print "Done sleeping  - I'm awake again!!!! "
+                continue      
 
         except KeyboardInterrupt:
             # User pressed CTRL-C: reset GPIO settings.
