@@ -69,7 +69,7 @@ a. WIFI:
 Edit the /etc/network/interfaces file and 
                   restart with 'sudo /etc/init.d/networking restart'
 i. Open wifi:
-auto wlan0
+#auto wlan0 - remove this line
 iface wlan0 inet dhcp
     wireless-essid "network-name-goes-here"
     wireless-mode managed
