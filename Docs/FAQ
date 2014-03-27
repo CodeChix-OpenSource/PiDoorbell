@@ -65,15 +65,14 @@ iii. Vi editor works best on the console
 
 3. Network setup: 
 
-a. WIFI:
-Edit the /etc/network/interfaces file and 
-                  restart with 'sudo /etc/init.d/networking restart'
+a. WIFI with interfaces file:
+Edit the /etc/network/interfaces file and reboot
+
 i. Open wifi:
 #auto wlan0 - remove this line
 iface wlan0 inet dhcp
     wireless-essid "network-name-goes-here"
     wireless-mode managed
-#Note: restart with ‘sudo /etc/init.d/networking restart’
 
 ii. Secure wifi:
 auto wlan0
@@ -91,8 +90,7 @@ address 192.168.2.2
 netmask 255.255.255.0
 gateway 192.168.2.1
 
-To enable the configuration, CTRL-ALT-DEL to reboot or 
-restart network with 'sudo /etc/init.d/networking restart'
+To enable the configuration, CTRL-ALT-DEL to reboot
 
 If using ethernet, connect the RaspberryPi's ethernet 
 cable to your laptop.
@@ -106,6 +104,13 @@ rPi prompt.
 Ssh to raspberrypi: ssh pi@<ip address> (password: raspberry)
 Optionally, ssh with X: ssh -X pi@<ip address> 
 
+c. Debugging the network:
+iwconfig     : shows which wifi SSID it is connected to
+ifdown/ifup  : restart the interface to see if the interfaces
+             file has some errors
+if using wpa_supplicant.conf, launch the script directly
+to check for any syntax errors
+ifconfig -a  : check for IP address, subnet, gateway on if 
 
 4. Hardware circuit
 a. The simple hardware circuit in this project uses two
@@ -126,5 +131,213 @@ As the next step, test the sensor independently by applying
 
 Finally, only when circuit and sensor are independently tested
 to work correctly, connect the sensor and rPi to the circuit.
+
+
+5. Make it work!
+This has complete overview, steps and examples on putting it
+together.
+
+1) Setup networking on the RaspberryPi via its HDMI console or 
+console port. Connect your Raspberry Pi to your laptop using an 
+ethernet cable and ssh pi@192.168.2.2 (password: raspberry)
+
+2) Once you ssh, make sure Raspberry Pi can reach the Internet. 
+Test with 'ping www.codechix.org'. If ping fails, turn on 
+Internet Sharing on your laptop. if you are using a MAC, 
+enable this at System Preferences -> Sharing -> Internet Sharing.
+
+3) Issue the following two commands to make sure you are working 
+with the latest software on the Raspeberry Pi:
+     sudo apt-get update
+     sudo apt-get upgrade 
+     sudo apt-get install rpi-update
+     sudo rpi-update
+
+Note that this takes a while (15-30 min)
+
+4) Install webcam software:
+     
+     sudo apt-get install fswebcam
+     sudo apt-get install libv4l-0
+     sudo apt-get install v4l-utils
+
+    You may also need these packages:
+
+     sudo apt-get install uvcvideo
+     sudo apt-get install uvccapture
+     uv4l_1.9_armhf.deb 
+
+     Useful debugging commands:
+
+     ls -al /dev/video*
+     lsusb -v
+     dmesg
+
+5) Copy and untar the PiDoorbell code to Raspberry Pi:
+
+     scp pidoorbell-gpio.tar pi@192.168.2.2:
+     tar xvf pidoorbell-gpio.tar
+
+6) Test if the sensor is working:
+
+     $ sudo python HC_SR04.py
+
+     If it is working, you should see it spitting out 
+     the following messages:
+
+Distance: 87.7 inches
+87.7236651623
+Distance: 78.3 inches
+78.3380201799
+Distance: 69.9 inches
+69.8602999195
+Distance: 87.8 inches
+87.7531780817
+Distance: 79.4 inches
+
+7) Run dropbox_uploader.sh. You will be asked your app key 
+   and secret. Also Permission type:
+
+$ ./dropbox_uploader.sh
+
+ # App key:
+<copy here from the website>
+# App secret:
+<copy here from the website>
+# Permission type, App folder or Full Dropbox [a/f]: a
+
+
+ > Token request... OK
+
+ Please open the following URL in your browser, and allow Dropbox Uploader
+ to access your DropBox folder:
+
+ --> https://www2.dropbox.com/1/oauth/authorize?oauth_token=8NGlM1Cj8205nC9q
+(this is a sample - you will receive a different URL for authentication
+when the script runs.)
+
+
+8) Update sms_auth_info.py file with twilio, dropbox, and twitter account info
+
+# Twilio authentication credentials
+# The values should be in double quotes, i.e., "xyz"
+
+account_sid = <Your Twilio account secure ID>
+auth_token = <Your Twilio authentication token>
+
+#Twitter authentication credentials
+# The values should be in singl quotes, i.e., 'xyz'
+
+twitter_auth_key = <Your Twitter authentication key>
+twitter_auth_secret = <Your Twitter authentication secret>
+twitter_access_key = <Your Twitter access key>
+twitter_access_secret = <Your Twitter access secret>
+
+# Dropbox app key and secret from the Dropbox dev site
+# The values should be in single quotes, i.e., 'xyz'
+
+DB_APP_KEY = <Your Dropbox application key>
+DB_APP_SECRET = <Your Dropbox application secret>
+DB_ACCESS_TYPE = 'app_folder'
+
+# going to store the access info in this file
+# Update the following file with the Dropbox token
+# as the first and only line in the file
+
+DB_TOKENS = 'dropbox_token.txt'
+
+
+9. Run the PiDoorbell code:
+
+pi@raspberrypi ~ $ sudo python pidoorbell-recognizer-gpio.py -i
+pic_mode is  2 local_mode is  False
+Distance: 87.7 inches
+87.7236651623
+Distance: 78.3 inches
+78.3380201799
+Distance: 69.9 inches
+69.8602999195
+Distance: 87.8 inches
+87.7531780817
+Distance: 79.4 inches
+79.3538012074
+Distance: 97.2 inches
+97.1790679542
+Distance: 77.3 inches
+77.3120437803
+Distance: 79.4 inches
+79.3602403898
+Distance: 69.3 inches
+69.3499947124
+Distance: 89.4 inches
+89.4423902711
+Distance: 78.6 inches
+78.5548059882
+Distance: 88.7 inches
+88.6627125992
+Distance: 89.9 inches
+89.9204995661
+Distance: 89.1 inches
+89.085552245
+Distance: 78.9 inches
+78.8547645695
+Distance: 76.8 inches
+76.8038849673
+Distance: 88.3 inches
+88.2548977123
+Distance: 79.7 inches
+79.6827361096
+Distance: 79.2 inches
+79.1955046395
+Distance: 9.4 inches
+9.44145122999
+******  DETECTED AN OBJECT AT --     9.44145122999 -- INCHES ******
+Distance: 5.7 inches
+5.68365168673
+******  DETECTED AN OBJECT AT --     5.68365168673 -- INCHES ******
+Distance: 5.4 inches
+5.36330236111
+******  DETECTED AN OBJECT AT --     5.36330236111 -- INCHES ******
+Distance: 5.3 inches
+5.27100741303
+******  DETECTED AN OBJECT AT --     5.27100741303 -- INCHES ******
+Distance: 5.3 inches
+5.34505801091
+******  DETECTED AN OBJECT AT --     5.34505801091 -- INCHES ******
+Taking photo with raspistill
+vchiq_lib: Incompatible VCHIQ library - driver version 2 (min 2), library version 6 (min 3)
+* failed to open vchiq instance
+Traceback (most recent call last):
+  File "pidoorbell-recognizer-gpio.py", line 211, in <module>
+    pidoorbell_gpio.run(args.i, latency, pic_mode, local_mode)
+  File "pidoorbell-recognizer-gpio.py", line 125, in run
+    take_still(BASEDIR_FOR_PIDOORBELL_VIDEOS+pidoorbell_filename, verbose=True)
+  File "/home/pi/piphoto.py", line 60, in take_still
+    raise "raspistill exited with %d" % rv
+TypeError: exceptions must be old-style classes or derived from BaseException, not str
+
+{… if the webcam setup is complete, it should take a picture here….]
+
+
+Accounts:
+
+Twilio: 
+     Open an account at https://www.twilio.com
+     Your account SID and TOKEN are in your Account Settings
+
+     ACCOUNT SID <>
+     AUTH TOKEN <>
+
+Dropbox:
+     Open an account at https://www.dropbox.com/home
+     Get your API Key and Secret at: https://www.dropbox.com/developers/apply?cont=/developers/apps
+          App Console
+          Create API
+          Agree to terms
+          Access to files and datastore
+          Yes
+          Appname: PiDoorbell-Serpil
+          App key: <>
+          App secret: <>
 
 
