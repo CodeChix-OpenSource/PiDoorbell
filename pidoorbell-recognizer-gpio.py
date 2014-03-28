@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Copyright (C) 2013 Rupa Dachere <rupa@codechix.org>>
+# Copyright (C) 2013-2014 Rupa Dachere <rupa@codechix.org>>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,11 +16,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
+#  Dependencies:
+#	HC_SR04.py, piphoto.py, sms_auth_info.py,
+#	dropbox_token.py, dropbox_uploader.sh
+#	ffmpeg, fswebcam, raspistill
+#
+#  Takes photo or video.  Checks to see if USB webcam 
+#	or RaspberryPi Camera module is present and automatically
+#	uses the correct input device
+#	Modifications by Akkana Peck - akkana@gmail.com
+#
 
 import sys, threading
 sys.path.append("/home/pi/pycon2014/pidoorbell")
-import subprocess
-from subprocess import call, Popen
+from subprocess import call, Popen, PIPE
 from time import time, sleep
 import datetime, argparse
 import RPi.GPIO as GPIO
@@ -52,32 +61,6 @@ SEND_NOTIFICATIONS_TWEET = "python ./send_notifications.py -m tweet -u"
 PRINT_STARTING_VIDEOCLIP = "\n\n************************** STARTING VIDEOCLIP:   ************************ \n\n" 
 PRINT_STOPPING_VIDEOCLIP = "\n\n**** ENDING VIDEOCLIP FOR - "
 PRINT_UPLOAD_TO_DROPBOX  = "\n\n************************** UPLOADING TO DROPBOX: ************************ \n\n" 
-
-def get_db_file_link(dropbox_file_name):
-
-    from dropbox import client, rest, session
-
-    # get the stored key from step one and use it
-    token_file = open(sms_auth_info.DB_TOKENS)
-    token_key,token_secret = token_file.read().split('|')
-    token_file.close()
-
-    # init the session and the client
-    sess = session.DropboxSession(sms_auth_info.DB_APP_KEY,
-                                  sms_auth_info.DB_APP_SECRET,
-                                  sms_auth_info.DB_ACCESS_TYPE )
-    sess.set_token(token_key,token_secret)
-
-    client = client.DropboxClient(sess)
-
-    return_dict = client.share(dropbox_file_name)
-
-    print "return_dict is: ", return_dict
-
-    print "URL to filename: " + dropbox_file_name + " is:  " + return_dict['url']
-
-    return return_dict['url']
-
 
 class PiDoorbell_GPIO() :
 
@@ -139,7 +122,7 @@ class PiDoorbell_GPIO() :
                                (now.year, now.month, now.day, now.hour, now.minute)
                     # take a photo snippet
                     try:
-                        take_still(pidoorbell_filename, verbose=True)
+                        take_still(BASEDIR_FOR_PIDOORBELL_VIDEOS+pidoorbell_filename, verbose=True)
                     except SystemError:
                         print "Couldn't take a photo"
                         continue
@@ -154,19 +137,18 @@ class PiDoorbell_GPIO() :
 
                 # Not local mode, so proceed with dropbox and sms:
                 print PRINT_UPLOAD_TO_DROPBOX
+
                 sync_dropbox_cmd = "./dropbox_uploader.sh upload ./dropbox-pidoorbell/" + \
                     pidoorbell_filename + " "+ pidoorbell_filename
-                process = subprocess.Popen(sync_dropbox_cmd, shell=True)
+                process = Popen(sync_dropbox_cmd, shell=True)
 
                 ## account for network latency 
                 print "latency is %s " % latency
                 sleep(float(latency))
 
-                #link_to_db_file = get_db_file_link(pidoorbell_filename) 
-
                 get_link_cmd = "./dropbox_uploader.sh share " + pidoorbell_filename
 
-                p = subprocess.Popen(get_link_cmd, stdout=subprocess.PIPE, shell=True)
+                p = Popen(get_link_cmd, stdout=PIPE, shell=True)
                 (output, err) = p.communicate()
 
                 # Send notifications using both Twilio (USA) and Twitter (worldwide)
@@ -174,8 +156,7 @@ class PiDoorbell_GPIO() :
                 # See definitions section for predefined vars to use (SEND_NOTIFICATIONS_SMS,
                 # SEND_NOTIFICATIONS_TWEET)
 
-                #send_sms_cmd = SEND_NOTIFICATIONS_ALL + output
-                send_sms_cmd = SEND_NOTIFICATIONS_SMS + output
+                send_sms_cmd = SEND_NOTIFICATIONS_ALL + output
                 sms_url_rc = call(send_sms_cmd, shell=True)
 
                 #sleep for a short while before checking again
@@ -195,14 +176,14 @@ if __name__ == '__main__':
     #   interactive mode - "-i"
     #   latency - "-latency"
     #   picture mode - "-pic_mode"
-    #   local mode (skip Twilio and Dropbox) - '-local'
+    #   local mode (skip Twilio, Twitter and Dropbox) - '-local'
 
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-i", action="store_true", help="Indicates interactive run mode for PiDoorbell")
     parser.add_argument("-latency", type=int, help="Increase latency to account for wifi/network issues. Default: 20s")
     parser.add_argument("-pic_mode", type=int, choices=[1,2], help="Specify Video Capture (1) or Photo (2). Default: Photo (1)")
-    parser.add_argument("-local", action="store_true", help="Run locally, don't use services like Dropbox or Twilio")
+    parser.add_argument("-local", action="store_true", help="Run locally, don't use services like Dropbox, Twitter or Twilio")
 
     args = parser.parse_args()
     if args.latency:
@@ -222,6 +203,8 @@ if __name__ == '__main__':
         local_mode = args.local
     else:
         local_mode = False
+
+    print "pic_mode is ", pic_mode, "local_mode is ", local_mode
 
     pidoorbell_gpio = PiDoorbell_GPIO()
     pidoorbell_gpio.run(args.i, latency, pic_mode, local_mode)

@@ -46,8 +46,6 @@ This is version 3.0 which removes the reliance on the Arduino Uno R3 and
 connects the proximity sensor directly to the RaspberryPi via GPIO.  It
 captures photos as well as video/audio clips.
 
-Possible: Use of the Rpi camera module instead of USB camera
-
 
 Documentation
 =====================
@@ -68,6 +66,7 @@ What software you get and what you need to create
 		dropbox_uploader.sh - script to upload photo/video to Dropbox
 		dropbox_token.txt - file containing dropbox uploader tokens
 		HC_SR04.py - standalone script to read sensor data
+                piphoto.py - module to handle still photos via USB or RPi camera
 
 2. What you will need to create/modify
 
@@ -113,7 +112,7 @@ and have read & followed the documentation, you should be able to run pidoorbell
 			This is optional.
 	  -pic_mode - Specify whether you want to take a Video Clip (1) or Photo (2). Defaults to Photo (2).
 			This is optional.
-	  -camera_input - Specify using Rpi camera module.  This is optional.
+	  -local - Don't use Dropbox and Twilio, just run locally, for testing.
 
 3. If you want to adjust the latency to account for slow bandwidth when uploading
 	to Dropbox, append the latency value to the end of the command like:

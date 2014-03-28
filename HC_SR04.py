@@ -68,8 +68,6 @@ def measure_distance_cm():
     while GPIO.input(GPIO_ECHO) == 1:
         stop = time.time()
 
-    #print "In here 8: stop is %d start is %d" % (stop, start)
-
     # Convert to inches:
     return ((stop - start) * 34300)/2
 

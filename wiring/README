@@ -1,0 +1,6 @@
+Files ending in FZZ are made with Fritzing (fritzing.org).
+
+You can download fritzing parts for the Raspberry Pi from:
+https://github.com/adafruit/Fritzing-Library/tree/master/parts
+and the HC-SR04 fritzing part from:
+http://fritzing.org/projects/hc-sr04-project
