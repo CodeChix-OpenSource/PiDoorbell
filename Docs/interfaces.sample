@@ -1,0 +1,27 @@
+#Sample interfaces file. Edit as needed, copy to /etc/network/interfaces
+#Restart network services with '/etc/init.d/networking restart'
+auto lo
+
+iface lo inet loopback
+
+allow-hotplug wlan0
+
+iface wlan0 inet manual
+
+#  wpa_supplicant contains network SSID/passphrase info for
+#  various wifi connections
+wpa-roam /etc/wpa_supplicant/wpa_supplicant.conf
+
+iface default inet dhcp
+
+auto eth0
+iface eth0 inet static
+address 192.168.1.2
+netmask 255.255.255.0
+network 192.168.1.0
+broadcast 192.168.1.255
+
+#  Enable the default gateway only if using eth with static IP
+#  as primary means of connecting to the network
+#gateway 192.168.1.1
+

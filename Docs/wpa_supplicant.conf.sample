@@ -1,0 +1,22 @@
+#Edit as necessary and copy to /etc/wpa_supplicant/wpa_supplicant.conf
+#Restart networking service with '/etc/init.d/networking restart'
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+network={
+	ssid="openwifi"
+	scan_ssid=1
+	key_mgmt=NONE
+	priority=10
+}
+
+network={
+	ssid="Deepa CC"
+	psk="codechix"
+	id_str="Airport Express"
+	priority=20
+}
+network={
+	key_mgmt=NONE
+	id_str="no_wifi"
+}
