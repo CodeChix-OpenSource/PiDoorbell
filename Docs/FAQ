@@ -318,6 +318,22 @@ TypeError: exceptions must be old-style classes or derived from BaseException, n
 
 {… if the webcam setup is complete, it should take a picture here….]
 
+If you get the following error:
+
+picamera.exc.PiCameraMMALError: Failed to create camera component: Out of memory
+
+There are a couple of config changes you can try:
+
+sudo raspi-config
+
+Go to "Advanced Options" then "Memory Split" and confirm it says 128
+
+Or:
+
+Go to "Enable Camera" and select Enable
+
+Then reboot.
+
 
 Accounts:
 
