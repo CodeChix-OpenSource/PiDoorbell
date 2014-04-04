@@ -64,7 +64,7 @@ PRINT_UPLOAD_TO_DROPBOX  = "\n\n************************** UPLOADING TO DROPBOX:
 
 class PiDoorbell_GPIO() :
 
-    def run(self, interactive, latency, pic_mode, local_mode) :
+    def run(self, interactive, latency, pic_mode, local_mode, notify_mode) :
 
         global BASEDIR_FOR_PIDOORBELL_VIDEOS, \
                MIN_TRIGGER_DISTANCE, MAX_TRIGGER_DISTANCE, \
@@ -156,7 +156,13 @@ class PiDoorbell_GPIO() :
                 # See definitions section for predefined vars to use (SEND_NOTIFICATIONS_SMS,
                 # SEND_NOTIFICATIONS_TWEET)
 
-                send_sms_cmd = SEND_NOTIFICATIONS_ALL + output
+		if notify_mode == "sms":
+                   send_sms_cmd = SEND_NOTIFICATIONS_SMS + output
+		elif notify_mode == "tweet":
+                   send_sms_cmd = SEND_NOTIFICATIONS_TWEET + output
+		elif notify_mode == "all":
+                   send_sms_cmd = SEND_NOTIFICATIONS_ALL + output
+
                 sms_url_rc = call(send_sms_cmd, shell=True)
 
                 #sleep for a short while before checking again
@@ -176,36 +182,47 @@ if __name__ == '__main__':
     #   interactive mode - "-i"
     #   latency - "-latency"
     #   picture mode - "-pic_mode"
-    #   local mode (skip Twilio, Twitter and Dropbox) - '-local'
+    #   local mode - "-local" (skip Twilio, Twitter and Dropbox) 
+    #   mode - "sms" or "tweet"
 
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-i", action="store_true", help="Indicates interactive run mode for PiDoorbell")
     parser.add_argument("-latency", type=int, help="Increase latency to account for wifi/network issues. Default: 20s")
-    parser.add_argument("-pic_mode", type=int, choices=[1,2], help="Specify Video Capture (1) or Photo (2). Default: Photo (1)")
+    parser.add_argument("-pic_mode", type=int, choices=[1,2], help="Specify Video Capture (1) or Photo (2). Default: Photo (2)")
     parser.add_argument("-local", action="store_true", help="Run locally, don't use services like Dropbox, Twitter or Twilio")
+    parser.add_argument("-mode", help="Specify 'sms' or 'tweet' for Twitter or SMS notifications. Default: All")
 
     args = parser.parse_args()
     if args.latency:
-        print "latency is: ", args.latency
+        #print "latency is: ", args.latency
         latency = args.latency
     else:
         latency = DEFAULT_LATENCY
 
     if args.pic_mode:
-        print "picture mode is: ",args.pic_mode
+        #print "picture mode is: ",args.pic_mode
         pic_mode = args.pic_mode
     else:
         pic_mode = PHOTO
 
+    if args.mode:
+        #print "notification mode is: ",args.mode
+        if args.mode == "sms":
+            notify_mode = "sms"
+        elif args.mode == "tweet":
+            notify_mode = "tweet"
+        else:
+            notify_mode = "all"
+
     if args.local:
-        print "picture mode is: ",args.pic_mode
+        #print "picture mode is: ",args.pic_mode
         local_mode = args.local
     else:
         local_mode = False
 
-    print "pic_mode is ", pic_mode, "local_mode is ", local_mode
+    print "latency is ", latency, " pic_mode is ", pic_mode, " local_mode is ", local_mode, " notification mode is ", notify_mode
 
     pidoorbell_gpio = PiDoorbell_GPIO()
-    pidoorbell_gpio.run(args.i, latency, pic_mode, local_mode)
+    pidoorbell_gpio.run(args.i, latency, pic_mode, local_mode, notify_mode)
 
