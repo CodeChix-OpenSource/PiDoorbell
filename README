@@ -12,14 +12,20 @@
 **                 	might also have their own README files
 ** Assumptions:    	You know Python and Linux basics. And you like to fiddle with hardware.
 ** Testing:        	Limited - needs lots of testing
-** Authors:        	Rupa Dachere
+** Authors:        	Rupa Dachere, Akkana Peck, Deepa Dhurka, Serpil Bayraktar
 **
 ** Main Contact:   rupa@codechix.org
 ** Alt. Contact:   organizers@codechix.org
 **
 ** Additional acknowledgements:  Akkana Peck - modifications to the HC_SR04.py script
-**					for averaging of sensor readings
-**				 Deepa Karnad Dhurka & Serpil Bayraktar: For FAQ's
+**					for averaging of sensor readings, creation of
+**					piphoto.py to support PiCamera module and 
+**					modularize USB Webcam code from 
+**					pidoorbell-recognizer-gpio.py
+**				 Deepa Karnad Dhurka, Serpil Bayraktar, Rupa Dachere: 
+**					For FAQ's
+**				 Rupa Dachere, Akkana Peck, Deepa Dhurka:
+**					Handouts &  Presentation slides
 ***********************************************************************************
 **
 
