@@ -36,7 +36,7 @@ def send_sms(sms_url):
         body_url = "PiDoorbell for PyCon 2014! Visitor @FrontDoor: " + sms_url
 
 	## to: you cell phone number;  from: twilio's assigned number (from "numbers" tab on your acct.)
-        message = client.sms.messages.create(to="XXXYYYZZZZ", from_="XXXYYYZZZZ", body=body_url)
+        message = client.sms.messages.create(to="+1XXXYYYZZZZ", from_="+1XXXYYYZZZZ", body=body_url)
 
 def send_tweet(tweet_url):
 
