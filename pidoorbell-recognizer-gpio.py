@@ -189,9 +189,9 @@ if __name__ == '__main__':
 
     parser.add_argument("-i", action="store_true", help="Indicates interactive run mode for PiDoorbell")
     parser.add_argument("-latency", type=int, help="Increase latency to account for wifi/network issues. Default: 20s")
-    parser.add_argument("-pic_mode", type=int, choices=[1,2], help="Specify Video Capture (1) or Photo (2). Default: Photo (2)", required=True)
+    parser.add_argument("-pic_mode", type=int, choices=[1,2], help="Required field. Specify Video Capture (1) or Photo (2). Default: Photo (2)", required=True)
     parser.add_argument("-local", action="store_true", help="Run locally, don't use services like Dropbox, Twitter or Twilio")
-    parser.add_argument("-mode", help="Specify 'sms' or 'tweet' for Twitter or SMS notifications. Default: All", required=True)
+    parser.add_argument("-mode", help="Required field. Specify 'sms' or 'tweet' or 'local' for Twitter/SMS notifications. For 'local', services like Dropbox, Twitter, Twilio will not be used. Default: All", required=True)
 
     args = parser.parse_args()
     if args.latency:
@@ -212,6 +212,8 @@ if __name__ == '__main__':
             notify_mode = "sms"
         elif args.mode == "tweet":
             notify_mode = "tweet"
+        elif args.mode == "local":
+            local_mode = True
         else:
             notify_mode = "all"
 
