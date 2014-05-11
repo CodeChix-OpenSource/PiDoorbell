@@ -156,14 +156,17 @@ class PiDoorbell_GPIO() :
                 # See definitions section for predefined vars to use (SEND_NOTIFICATIONS_SMS,
                 # SEND_NOTIFICATIONS_TWEET)
 
-		if notify_mode == "sms":
-                   send_sms_cmd = SEND_NOTIFICATIONS_SMS + output
-		elif notify_mode == "tweet":
-                   send_sms_cmd = SEND_NOTIFICATIONS_TWEET + output
-		elif notify_mode == "all":
-                   send_sms_cmd = SEND_NOTIFICATIONS_ALL + output
+		if notify_mode == "local":
+			break;
+		else:
+		    if notify_mode == "sms":
+                       send_sms_cmd = SEND_NOTIFICATIONS_SMS + output
+		    elif notify_mode == "tweet":
+                       send_sms_cmd = SEND_NOTIFICATIONS_TWEET + output
+		    elif notify_mode == "all":
+                       send_sms_cmd = SEND_NOTIFICATIONS_ALL + output
 
-                sms_url_rc = call(send_sms_cmd, shell=True)
+                    sms_url_rc = call(send_sms_cmd, shell=True)
 
                 #sleep for a short while before checking again
                 sleep(DELAY_BETWEEN_VISITORS)
