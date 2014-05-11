@@ -118,7 +118,6 @@ and have read & followed the documentation, you should be able to run pidoorbell
 			This is optional.
 	  -pic_mode - Required field. Specify whether you want to take a Video Clip (1) or Photo (2). Defaults to Photo (2).
 			This is optional.
-	  -local - Don't use Dropbox and Twilio, just run locally, for testing.
 	  -mode - Required field. This is the notification mode. Specify, "sms", "tweet" or "local".  The "local" mode will
 			not use services like Twitter, Dropbox or Twilio.	
 
@@ -136,6 +135,8 @@ and have read & followed the documentation, you should be able to run pidoorbell
 
    	Note that the default pic_mode is Photo (2).  Video Clip = 1.
 
+NOTE: This code has not been tested in non-interactive mode so bugs may exist.
+
 Web sites
 ==========
 https://github.com/codechix/pidoorbell
@@ -147,7 +148,7 @@ Bug report
 
 1. There is a bug with the sequential count (noise tolerance)
 	where the count isn't tracked
-
+2. Never tested in non-interactive mode
 
 Supported systems
 ==========
