@@ -124,14 +124,14 @@ and have read & followed the documentation, you should be able to run pidoorbell
 3. If you want to adjust the latency to account for slow bandwidth when uploading
 	to Dropbox, append the latency value to the end of the command like:
 
-   	"sudo python ./pidoorbell-recognizer-gpio.py -i -latency <latency_value>"
+   	"sudo python ./pidoorbell-recognizer-gpio.py -i -latency <latency_value> -pic_mode <1 or 2> -mode <sms or tweet or local>"
 
    	Note that the default latency is 20 seconds 
 
 4. If you want to specify the picture mode for a video clip of 10 secs [1] or a
 	snapshot/Photo [2], append the pic_mode value to the end of the command like:
 
-   	"sudo python ./pidoorbell-recognizer-gpio.py -i -pic_mode <1 or 2>"
+   	"sudo python ./pidoorbell-recognizer-gpio.py -i -pic_mode <1 or 2> -mode <sms or tweet or local>"
 
    	Note that the default pic_mode is Photo (2).  Video Clip = 1.
 
