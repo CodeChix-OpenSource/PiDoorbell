@@ -5,7 +5,7 @@
 **              2013-2014
 ************************************************************************************
 **
-** License:       	Apache 2.0
+** License:       	GPL v2
 ** Version:        	1.0
 ** Project/Library:	PiDoorbell
 ** Description:    	Top level README - individual subdirs
@@ -44,7 +44,7 @@ updates with new features and bugfixes.
 
 License information
 =====================
-PiDoorbell license: Apache 2.0
+PiDoorbell license: GPL v2
 
 What’s new in this release?
 =====================
@@ -116,9 +116,11 @@ and have read & followed the documentation, you should be able to run pidoorbell
 	  -latency - Latency in seconds if you want to increase the default of 20s
 			to account for crappy wifi/network connectivity
 			This is optional.
-	  -pic_mode - Specify whether you want to take a Video Clip (1) or Photo (2). Defaults to Photo (2).
+	  -pic_mode - Required field. Specify whether you want to take a Video Clip (1) or Photo (2). Defaults to Photo (2).
 			This is optional.
 	  -local - Don't use Dropbox and Twilio, just run locally, for testing.
+	  -mode - Required field. This is the notification mode. Specify, "sms", "tweet" or "local".  The "local" mode will
+			not use services like Twitter, Dropbox or Twilio.	
 
 3. If you want to adjust the latency to account for slow bandwidth when uploading
 	to Dropbox, append the latency value to the end of the command like:
