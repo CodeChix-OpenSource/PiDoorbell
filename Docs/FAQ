@@ -347,5 +347,21 @@ Go to "Enable Camera" and select Enable
 
 Then reboot.
 
+===========================================
+
+If you have trouble getting Internet Sharing to work, try the following. 
+Some Mac's have issues:  https://discussions.apple.com/message/23546557#23546557
+
+1) Connect to PyCon Wifi
+2) Modify the network settings to the following:
+192.168.2.1  (example)
+255.255.255.0
+3) Go to sharing:
+4) under sharing enabled it as From Wifi to Thunderbolt Ethernet
+5) Check the box for internet sharing.
+6) try ssh.
+7) If it works, yay, else, uncheck and try again steps 4-6. Basically keep reseting it.
+
+
 
 
