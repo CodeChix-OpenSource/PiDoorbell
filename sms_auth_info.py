@@ -7,7 +7,7 @@
 ##              2013-2014
 ##**********************************************************************************
 ##
-## License:       	Apache 2.0 (ONF requirement)
+## License:       	GPLv 2.0
 ## Version:        	3.0
 ## Project/Library:	PiDoorbell
 ## Description:    	This file contains *sensitive* (**SECURE THIS INFO**) on your 
