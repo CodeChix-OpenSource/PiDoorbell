@@ -231,7 +231,7 @@ PiDoorbell Recognizer Script
 	It needs to be run as root (because it needs access to GPIO). It can take several arguments: 
 	pidoorbell-recognizer-gpio.py -h will list them all.
 	For initial testing, run it like this:
-	sudo python pidoorbell-recognizer-gpio.py -i -local
+	sudo python pidoorbell-recognizer-gpio.py -i -pic_mode 2 -mode sms
 
 	-i specifies interactive mode, so you can see verbose messages about what it's doing. -local keeps it 
 	from using any web services while you're still getting everything hooked up.
@@ -245,7 +245,7 @@ PiDoorbell Recognizer Script
 	-latency specifies the time the script waits for photos/videos to be uploaded to Dropbox. Default is 20s.  
 	You might need to tweak this depending on network latency.
 	-pic_mode specifies whether to take a video (1) or photo (2). Default: photo(2).
-	-mode specifies the notification service to use: "sms" or "tweet" or "all".  Default: "all".
+	-mode specifies the notification service to use: "sms" or "tweet" or "local" or "all".  Default: "all".
 	Taking photos or video of your visitors
 	The recognizer can take a photo if you have a camera on your Raspberry Pi. That can be either a USB webcam 
 	that works with fswebcam and ffmpeg, or the Raspberry Pi camera module attached to your Pi.
@@ -324,14 +324,14 @@ Adding Dropbox, Twilio, Twitter
 Putting it all together
 	With Dropbox and Twilio all set up, run the PiDoorbell code:
 
-	pi@raspberrypi ~ $ sudo python pidoorbell-recognizer-gpio.py -i -mode sms
+	pi@raspberrypi ~ $ sudo python pidoorbell-recognizer-gpio.py -i -mode sms -pic_mode 2
 
 	Then put your hand or an object in front of the sensor – you should see messages like:
 	******  DETECTED AN OBJECT AT --     9.44145122999 -- INCHES ******
 	Then it should take a photo (if you have a camera), upload it to Dropbox, and send you an SMS!
 
 	Example output:
-	pi@raspberrypi ~/pycon2014/pidoorbell $ sudo python pidoorbell-recognizer-gpio.py -i -mode sms
+	pi@raspberrypi ~/pycon2014/pidoorbell $ sudo python pidoorbell-recognizer-gpio.py -i -mode sms -pic_mode 2
 	latency is  20  pic_mode is  2  local_mode is  False  notification mode is  sms
 	206.71170739
 	Distance: 206.7 inches
