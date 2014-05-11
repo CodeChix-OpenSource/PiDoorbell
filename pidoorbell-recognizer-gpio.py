@@ -185,15 +185,13 @@ if __name__ == '__main__':
     #   interactive mode - "-i"
     #   latency - "-latency"
     #   picture mode - "-pic_mode"
-    #   local mode - "-local" (skip Twilio, Twitter and Dropbox) 
-    #   mode - "sms" or "tweet"
+    #   mode - "sms" or "tweet" "-local" (skip Twilio, Twitter and Dropbox)
 
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-i", action="store_true", help="Indicates interactive run mode for PiDoorbell")
     parser.add_argument("-latency", type=int, help="Increase latency to account for wifi/network issues. Default: 20s")
     parser.add_argument("-pic_mode", type=int, choices=[1,2], help="Required field. Specify Video Capture (1) or Photo (2). Default: Photo (2)", required=True)
-    parser.add_argument("-local", action="store_true", help="Run locally, don't use services like Dropbox, Twitter or Twilio")
     parser.add_argument("-mode", help="Required field. Specify 'sms' or 'tweet' or 'local' for Twitter/SMS notifications. For 'local', services like Dropbox, Twitter, Twilio will not be used. Default: All", required=True)
 
     args = parser.parse_args()
@@ -211,20 +209,18 @@ if __name__ == '__main__':
 
     if args.mode:
         #print "notification mode is: ",args.mode
+
+	local_mode = False
+
         if args.mode == "sms":
             notify_mode = "sms"
         elif args.mode == "tweet":
             notify_mode = "tweet"
         elif args.mode == "local":
+	    notify_mode = "local"
             local_mode = True
         else:
             notify_mode = "all"
-
-    if args.local:
-        #print "picture mode is: ",args.pic_mode
-        local_mode = args.local
-    else:
-        local_mode = False
 
     print "latency is ", latency, " pic_mode is ", pic_mode, " local_mode is ", local_mode, " notification mode is ", notify_mode
 
